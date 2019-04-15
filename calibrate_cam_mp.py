@@ -1,3 +1,6 @@
+'''
+
+'''
 import time
 import cv2.aruco as A
 import cv2
@@ -24,7 +27,7 @@ allCorners = []
 allIds = []
 decimator = 0
 # path to images to be used for calibration
-impath = './images_1640_1232_C95/'
+impath = '/data/workspace/Picam-arUco/calib/images_1640_1232_C95/'
 # name of saved matrices Picam_v2_dist_+cal_name ... will be saved to PWD
 cal_name = '1640_C95'
 images = os.listdir(impath)
@@ -41,7 +44,7 @@ def read_image(i):
     cv2.aruco.drawDetectedMarkers(frame, res[0], res[1])
     if len(res[0])>0:
         res2 = cv2.aruco.interpolateCornersCharuco(res[0],res[1],gray,board)
-        if res2[1] is not None and res2[2] is not None and len(res2[1])>10:
+        if res2[1] is not None and res2[2] is not None and len(res2[1])>23:
             return res2[1],res2[2]
     return [], []
 

@@ -53,7 +53,7 @@ for idx, i in enumerate(images):
 
     if len(res[0])>0:
         res2 = cv2.aruco.interpolateCornersCharuco(res[0],res[1],gray,board)
-        if res2[1] is not None and res2[2] is not None and len(res2[1])>10 and decimator%1==0:
+        if res2[1] is not None and res2[2] is not None and len(res2[1])>23 and decimator%1==0:
             #print ('accepted')
             acctepted += 1
             allCorners.append(res2[1])
