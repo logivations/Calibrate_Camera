@@ -88,7 +88,9 @@ try:
             allCorners1, allIds1 = shuffle(allCorners,allIds)
             allIds1 = allIds1[:int(len(allIds)/2)]
             allCorners1 = allCorners1[:int(len(allIds)/2)]
-            cal1.append(cv2.aruco.calibrateCameraCharuco(allCorners1,allIds1,board,imsize,None,None))
+            objPoints, imgPoints = [board.chessboardCorners for i in allIds1], allCorners1
+            cal = cv2.calibrateCameraRO(objPoints, imgPoints, imsize,4,None,None)
+            #cal1.append(cv2.aruco.calibrateCameraCharuco(allCorners1,allIds1,board,imsize,None,None))
             if cal is None:
                 cal = cal1[-1]
             if cal1[-1][0]<cal[0]:

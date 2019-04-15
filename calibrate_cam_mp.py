@@ -67,7 +67,9 @@ def calibrate_char(k=0):
         allCorners1, allIds1 = shuffle(allCorners, allIds)
         allIds1 = allIds1[:int(len(allIds) / 1.5)]
         allCorners1 = allCorners1[:int(len(allIds) / 1.5)]
-        cal = cv2.aruco.calibrateCameraCharuco(allCorners1, allIds1, board, imsize, None, None)
+        #cal = cv2.aruco.calibrateCameraCharuco(allCorners1, allIds1, board, imsize, None, None)
+        objPoints, imgPoints = [board.chessboardCorners for i in allIds1], allCorners1
+        cal = cv2.calibrateCameraRO(objPoints, imgPoints, imsize, 4, None, None)
     except Exception as e:
         print('error calib:', e)
         pass  # some combinations of images are not calibrateable
