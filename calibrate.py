@@ -23,9 +23,9 @@ allCorners = []
 allIds = []
 decimator = 0
 # path to images to be used for calibration
-impath = './images_1640_1232_C95/'
+impath = '/data/cimg/'
 # name of saved matrices Picam_v2_dist_+cal_name ...
-cal_name = '1640_C95'
+cal_name = 'ids_3880_12mm'
 images = os.listdir(impath)
 images.sort()
 images = shuffle(images,random_state=2)
@@ -64,7 +64,7 @@ for idx, i in enumerate(images):
             rejected += 1
             #print ('rejected')
         cv2.aruco.drawDetectedMarkers(frame,res[0],res[1])
-    cv2.imshow('image',frame)
+    #cv2.imshow('image',frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
@@ -82,15 +82,16 @@ cv2.destroyAllWindows()
 cal = None
 cal1 = []
 try:
-    #cal = cv2.aruco.calibrateCameraCharuco(allCorners, allIds, board, imsize, None, None)
+    cal = cv2.aruco.calibrateCameraCharuco(allCorners, allIds, board, imsize, None, None)
     for i in range(10):
         try:
             allCorners1, allIds1 = shuffle(allCorners,allIds)
             allIds1 = allIds1[:int(len(allIds)/2)]
             allCorners1 = allCorners1[:int(len(allIds)/2)]
             objPoints, imgPoints = [board.chessboardCorners for i in allIds1], allCorners1
-            cal = cv2.calibrateCameraRO(objPoints, imgPoints, imsize,4,None,None)
-            #cal1.append(cv2.aruco.calibrateCameraCharuco(allCorners1,allIds1,board,imsize,None,None))
+            #cal = cv2.calibrateCameraRO(objPoints, imgPoints, imsize,4,None,None)
+            print(cal)
+            cal1.append(cv2.aruco.calibrateCameraCharuco(allCorners1,allIds1,board,imsize,None,None))
             if cal is None:
                 cal = cal1[-1]
             if cal1[-1][0]<cal[0]:
