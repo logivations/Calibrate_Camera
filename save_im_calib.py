@@ -17,8 +17,8 @@ import picamera.array
 from time import sleep
 # marker_size = aruco_markers_props.markersize
 save_folder = './images_1640_412/'
-dictionary = aruco.getPredefinedDictionary(aruco.DICT_4X4_50)
-parameters = aruco.DetectorParameters_create()
+#dictionary = aruco.getPredefinedDictionary(aruco.DICT_4X4_50)
+#parameters = aruco.DetectorParameters_create()
 # https://docs.opencv.org/3.2.0/d5/dae/tutorial_aruco_detection.html
 
 markerSize = 16
@@ -42,10 +42,10 @@ def get_static_path(folder_name, file_name):
 # myLoadedData = cv2.FileStorage(file_path,cv2.FileStorage_READ)
 # print myLoadedData
 
-mtx_path = get_static_path('resources', "%s_mtx.npy" % 'Picam_v2')
-cam_mtx = np.load(mtx_path)
-dist_path = get_static_path('resources', "%s_dist.npy" % 'Picam_v2')
-dist_coef = np.load(dist_path)
+#mtx_path = get_static_path('resources', "%s_mtx.npy" % 'Picam_v2')
+#cam_mtx = np.load(mtx_path)
+#dist_path = get_static_path('resources', "%s_dist.npy" % 'Picam_v2')
+#dist_coef = np.load(dist_path)
       
 @time_it
 def analyze(frame, vis=False,save_im=True, frame_num=0):
@@ -100,7 +100,7 @@ def start_demo(device=0, fps=10, width=1640, height=1232,  vis=False, save_im=Tr
     
     if vis :
         cv2.namedWindow("output", cv2.WINDOW_NORMAL)    
-        cv2.resizeWindow("output", 1280, 720)
+        cv2.resizeWindow("output", 640, 480)
 
     try:
         camera = picamera.PiCamera(sensor_mode=2)
@@ -120,8 +120,8 @@ def start_demo(device=0, fps=10, width=1640, height=1232,  vis=False, save_im=Tr
     finally:
         pass
 
-    cv2.destroyAllWindows()
-    camera.stop_recording()
+        cv2.destroyAllWindows()
+        #camera.stop_recording()
 
 
 if __name__ == '__main__':
