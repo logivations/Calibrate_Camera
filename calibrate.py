@@ -70,7 +70,7 @@ for idx, i in enumerate(images):
 
     decimator+=1
 print(np.array(allIds[0][0]).shape, np.array(allCorners[0][0]).shape)
-print len(allIds),len(allCorners)
+print (len(allIds),len(allCorners))
 #print(allIds[0])
 imsize = gray.shape
 print (imsize)
@@ -83,19 +83,26 @@ cal = None
 cal1 = []
 try:
     cal = cv2.aruco.calibrateCameraCharuco(allCorners, allIds, board, imsize, None, None)
+    print(cal[0])
+    cal1.append(cal)
     for i in range(10):
+        print(i)
         try:
             allCorners1, allIds1 = shuffle(allCorners,allIds)
-            allIds1 = allIds1[:int(len(allIds)/2)]
-            allCorners1 = allCorners1[:int(len(allIds)/2)]
+            allIds1 = allIds1[:int(len(allIds)*4/5)]
+            allCorners1 = allCorners1[:int(len(allIds)*4/5)]
             objPoints, imgPoints = [board.chessboardCorners for i in allIds1], allCorners1
             #cal = cv2.calibrateCameraRO(objPoints, imgPoints, imsize,4,None,None)
-            print(cal)
-            cal1.append(cv2.aruco.calibrateCameraCharuco(allCorners1,allIds1,board,imsize,None,None))
+            cal = cv2.aruco.calibrateCameraCharuco(allCorners1,allIds1,board,imsize,None,None)
+            print(cal[0])
+
             if cal is None:
                 cal = cal1[-1]
             if cal1[-1][0]<cal[0]:
                 cal = cal1[-1]
+            else:
+                cal1[0]=cal
+
             print(i,cal[0],cal1[-1][0])
         except Exception as e:
             print('error calib:',e)
