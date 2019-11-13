@@ -23,9 +23,9 @@ allCorners = []
 allIds = []
 decimator = 0
 # path to images to be used for calibration
-impath = '/data/cimg/'
+impath = './images_1640_413/'
 # name of saved matrices Picam_v2_dist_+cal_name ...
-cal_name = 'ids_3880_12mm'
+cal_name = '1640_413'
 images = os.listdir(impath)
 images.sort()
 images = shuffle(images,random_state=2)

@@ -2,6 +2,7 @@
 
 use calibrate.py for picam camera or any other camera calibration
 image path needs to modified in calibrate.py
+name for saved calibration matrices can be set in start of script
 
 calibrate_cam_mp.py is same but uses multiprocessing for image loading but has no visualization of detected markers
 
