@@ -59,9 +59,7 @@ _, cameraMatrix, distCoeffs, _, _ = cv2.aruco.calibrateCameraCharuco(
 )
 
 
-print(
-    f"Calibration completed (time spend: {time.time() - t1}, saving results..."
-)
+print(f"Calibration completed (time spend: {time.time() - t1}, saving results...")
 
 for res in [("mtx", cameraMatrix), ("dist", distCoeffs)]:
     path = f"{SAVE_RESULT_PATH}/gazebo_{res[0]}_{CAMERA_RES[1]}.npy"

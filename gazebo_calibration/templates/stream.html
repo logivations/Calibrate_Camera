@@ -46,6 +46,10 @@
                 transition: 0.3s;
             }
 
+            .additional-info {
+                text-align: center;
+            }
+
             .button-container button:hover {
                 background-color: #fff;
                 color: #333;
@@ -66,10 +70,14 @@
 
 
         <h1 style="text-align: center">Gazebo video stream</h1>
+
+        <div class="additional-info">
+            <p>Undistort: {{ undistort }} | Lens degree: {{ lens_degree }} | Resolution - {{ default_res }}</p>
+        </div>
+
         <div class="image-container">
             <img src="http://localhost:8020/stream" alt="Video Stream">
         </div>
-
         <script>
             async function saveImage(url, messageId) {
                 try {

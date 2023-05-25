@@ -16,4 +16,3 @@ board = aruco.CharucoBoard_create(
 board_image = board.draw(outSize=(10000, 10000))
 cv2.imwrite("../calibration_checkerboard.jpg", board_image)
 print("Calibration marker saved")
-
