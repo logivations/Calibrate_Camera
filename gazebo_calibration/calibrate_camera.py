@@ -39,7 +39,7 @@ for fname in images:
     img = cv2.imread(fname)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     corners, ids, _ = cv2.aruco.detectMarkers(gray, aruco_dict)
-    if len(corners) > 0:
+    if len(corners) > 6:
         _, charucoCorners, charucoIds = cv2.aruco.interpolateCornersCharuco(
             corners, ids, gray, board
         )
@@ -62,7 +62,7 @@ _, cameraMatrix, distCoeffs, _, _ = cv2.aruco.calibrateCameraCharuco(
 print(f"Calibration completed (time spend: {time.time() - t1}, saving results...")
 
 for res in [("mtx", cameraMatrix), ("dist", distCoeffs)]:
+    if not os.path.exists(SAVE_RESULT_PATH):
+        os.makedirs(SAVE_RESULT_PATH, exist_ok=True)
     path = f"{SAVE_RESULT_PATH}/gazebo_{res[0]}_{CAMERA_RES[1]}.npy"
-    if not os.path.exists(path):
-        os.makedirs(path, exist_ok=True)
     np.save(path, res[1])
