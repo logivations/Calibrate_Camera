@@ -8,6 +8,14 @@ import cv2
 import numpy as np
 
 from lv import DEFAULT_FILE_PATH
+from lv.tracking.constants import STANDARD_RES
+
+##########################################
+IMAGE_PATH = "/data/calibration_images/120/black_and_white"
+SAVE_RESULT_PATH = "/code/deep_cv/appconfig/tracking/camera_settings/120_degrees_lens"
+CAMERA_RES = STANDARD_RES
+##########################################
+
 
 aruco_dict = cv2.aruco.Dictionary_get(cv2.aruco.DICT_6X6_250)
 board = cv2.aruco.CharucoBoard_create(
@@ -18,7 +26,7 @@ board = cv2.aruco.CharucoBoard_create(
     dictionary=aruco_dict,
 )
 
-images = glob.glob(f"{DEFAULT_FILE_PATH}/calibration_images/grayscale/*.jpg")
+images = glob.glob(f"{IMAGE_PATH}/*.jpg")
 
 print(f"Found {len(images)} images")
 
@@ -50,13 +58,13 @@ _, cameraMatrix, distCoeffs, _, _ = cv2.aruco.calibrateCameraCharuco(
     distCoeffs=None,
 )
 
-path = f"{DEFAULT_FILE_PATH}/calibration_images"
-if not os.path.exists(path):
-    os.makedirs(path, exist_ok=True)
 
 print(
-    f"Calibration completed (time spend: {time.time() - t1}, result saved"
+    f"Calibration completed (time spend: {time.time() - t1}, saving results..."
 )
-np.save(f"{DEFAULT_FILE_PATH}/calibration_images/gazebo_mtx_1640.npy", cameraMatrix)
-np.save(f"{DEFAULT_FILE_PATH}/calibration_images/gazebo_dist_1640.npy", distCoeffs)
 
+for res in [("mtx", cameraMatrix), ("dist", distCoeffs)]:
+    path = f"{SAVE_RESULT_PATH}/gazebo_{res[0]}_{CAMERA_RES[1]}.npy"
+    if not os.path.exists(path):
+        os.makedirs(path, exist_ok=True)
+    np.save(path, res[1])
