@@ -8,12 +8,12 @@ import cv2
 import numpy as np
 
 from lv import DEFAULT_FILE_PATH
-from lv.tracking.constants import STANDARD_RES
+from lv.tracking.constants import STANDARD_RES, TIS_CAM_RES
 
 ##########################################
-IMAGE_PATH = "/data/calibration_images/120/black_and_white"
-SAVE_RESULT_PATH = "/code/deep_cv/appconfig/tracking/camera_settings/120_degrees_lens"
-CAMERA_RES = STANDARD_RES
+IMAGE_PATH = "/data/calibration_images/121/black_and_white"
+SAVE_RESULT_PATH = "/code/deep_cv/appconfig/tracking/camera_settings/121_degrees_lens"
+CAMERA_RES = TIS_CAM_RES #  STANDARD_RES
 ##########################################
 
 
@@ -26,7 +26,7 @@ board = cv2.aruco.CharucoBoard_create(
     dictionary=aruco_dict,
 )
 
-images = glob.glob(f"{IMAGE_PATH}/*.jpg")
+images = glob.glob(f"{IMAGE_PATH}/*.png")
 
 print(f"Found {len(images)} images")
 
@@ -35,17 +35,22 @@ allCharucoIds = []
 
 print("Image processing...")
 t1 = time.time()
+
 for fname in images:
     img = cv2.imread(fname)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     corners, ids, _ = cv2.aruco.detectMarkers(gray, aruco_dict)
-    if len(corners) > 6:
+    if len(corners) > 10:
         _, charucoCorners, charucoIds = cv2.aruco.interpolateCornersCharuco(
             corners, ids, gray, board
         )
         allCharucoCorners.append(charucoCorners)
         allCharucoIds.append(charucoIds)
+    else:
+        print("bad image: ", fname)
 
+
+print(f"processing {len(allCharucoIds)} images")
 print(f"Image processing completed, spend {time.time() - t1} s.")
 print("Starting camera calibration...")
 t1 = time.time()

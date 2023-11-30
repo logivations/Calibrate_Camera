@@ -14,21 +14,21 @@ from lv.frame_grabbers.generic_ros_frame_grabber import (
     GenericRosFrameGrabber,
 )
 from lv.frame_grabbers.video_stream_utils import concatenate_images
-from lv.tracking.constants import ALL_CAMERAS_CONFIGS, STANDARD_RES
+from lv.tracking.constants import ALL_CAMERAS_CONFIGS, STANDARD_RES, TIS_CAM_RES
 from lv.utils import camera_utils
 
 ############################################
 BASE_IMAGE_DIR = "/data/calibration_images"
-LENS_DEGREE = 120
-GRAY_IMAGE_RES = STANDARD_RES
-RGB_IMAGE_RES = (608, 800)
+LENS_DEGREE = 121
+GRAY_IMAGE_RES = TIS_CAM_RES
+RGB_IMAGE_RES = TIS_CAM_RES
 
-TOPIC = "/warehouse_light/camera104"
+TOPIC = "/warehouse_light/camera105"
 
 UNDISTORT = True
 ############################################
 # import math
-# HFoV_deg = 60
+# HFoV_deg = 107.7
 # HFoV_rad = HFoV_deg * (math.pi / 180)
 # print(HFoV_rad)
 
@@ -66,7 +66,7 @@ class RealTimeImageSaver:
                 if not os.path.exists(path):
                     os.makedirs(path, exist_ok=True)
 
-                img_path = f"{path}/{datetime.datetime.now().strftime('%Y-%m-%d_%H:%M:%S.%f')[:-3]}.jpg"
+                img_path = f"{path}/{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f')[:-3]}.png"
                 msg = f"{text}: {img_path}"
                 cv2.imwrite(img_path, image_to_save)
                 print(
@@ -119,7 +119,7 @@ class RealTimeImageSaver:
 
             try:
                 ret, jpeg = cv2.imencode(
-                    ".jpg", concatenated_image, [int(cv2.IMWRITE_JPEG_QUALITY), 100]
+                    ".jpg", concatenated_image, [int(cv2.IMWRITE_JPEG_QUALITY), 50]
                 )
             except:
                 print("could not encode image")
@@ -131,7 +131,7 @@ class RealTimeImageSaver:
 app = FastAPI()
 
 image_generator = RealTimeImageSaver()
-templates = Jinja2Templates(directory="/code/deep_cv/lv/gz_calibration/templates")
+templates = Jinja2Templates(directory="/code/deep_cv/lv/gazebo_calibration/templates")
 
 
 @app.get("/stream")
