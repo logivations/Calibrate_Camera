@@ -22,6 +22,16 @@ SCALE_PERCENT = 50
 dictionary = cv2.aruco.getPredefinedDictionary(ARUCO_DICT)
 board = cv2.aruco.CharucoBoard_create(SQUARES_X, SQUARES_Y, SQUARE_LENGTH, MARKER_LENGTH, dictionary)
 
+# Create the image with the ChArUco board
+# size_ratio = SQUARES_Y / SQUARES_X
+# LENGTH_PX = 640   # total length of the page in pixels
+# MARGIN_PX = 20    # size of the margin in pixels
+# SAVE_NAME = 'ChArUco_Marker.png'
+# img = board.draw((LENGTH_PX, int(LENGTH_PX * size_ratio)), None, MARGIN_PX, 1)
+# cv2.imshow("img", img)
+# cv2.waitKey(2000)
+# cv2.imwrite(SAVE_NAME, img)
+
 
 def get_images():
     rejected_images = 0
