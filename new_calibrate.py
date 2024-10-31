@@ -12,7 +12,7 @@ SQUARES_Y = 7
 SQUARE_LENGTH = 0.139
 MARKER_LENGTH = 0.084
 
-PATH_TO_CALIBRATION_IMAGES = '/data/calibration_info/264_calibration_dataset/'
+PATH_TO_CALIBRATION_IMAGES = '/data/calibration_info/'
 CURRENT_LEN = 264
 MAX_COUNT_ACCEPTED_IMAGES = 500
 
@@ -24,13 +24,18 @@ board = cv2.aruco.CharucoBoard_create(SQUARES_X, SQUARES_Y, SQUARE_LENGTH, MARKE
 
 # Create the image with the ChArUco board
 # size_ratio = SQUARES_Y / SQUARES_X
-# LENGTH_PX = 640   # total length of the page in pixels
+# LENGTH_PX = 1400   # total length of the page in pixels
 # MARGIN_PX = 20    # size of the margin in pixels
 # SAVE_NAME = 'ChArUco_Marker.png'
 # img = board.draw((LENGTH_PX, int(LENGTH_PX * size_ratio)), None, MARGIN_PX, 1)
 # cv2.imshow("img", img)
 # cv2.waitKey(2000)
 # cv2.imwrite(SAVE_NAME, img)
+# play = True
+# while play:
+#     if cv2.waitKey(1) & 0xFF == ord('q'):
+#         play = False
+# cv2.destroyAllWindows()
 
 
 def get_images():
@@ -72,12 +77,20 @@ def get_images():
                 small_image = cv2.resize(gray_copy, (small_height, small_width), interpolation=cv2.INTER_AREA)
                 cv2.imshow(f'REJECTED_{image}', small_image)
                 os.remove(image)
+        else:
+            rejected_images += 1
+            small_width = int(gray_copy.shape[0] * SCALE_PERCENT / 100)
+            small_height = int(gray_copy.shape[1] * SCALE_PERCENT / 100)
+            small_image = cv2.resize(gray_copy, (small_height, small_width), interpolation=cv2.INTER_AREA)
+            cv2.imshow(f'REJECTED_{image}', small_image)
+            os.remove(image)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
-    image_shape = gray.shape[:2][::] if gray is not None else None
-
+    # should be [width, height] -> https://docs.opencv.org/4.5.4/dc/dbb/tutorial_py_calibration.html
+    image_shape = gray.shape[:2][::-1] if gray is not None else None
+    print("Image shape:", image_shape)
     print('Accepted: ', accepted_images)
     print('Rejected: ', rejected_images)
     cv2.destroyAllWindows()
