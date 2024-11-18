@@ -192,11 +192,41 @@ def plot_reprojection_error_graph(working_images, img_points, camera_matrix, dis
     plt.show()
 
 
-all_charuco_corners, all_charuco_ids, image_shape, frame_accepted, working_images = get_images()
-retval, camera_matrix, dist_coeffs, rvecs, tvecs = calibrate_camera(all_charuco_corners, all_charuco_ids, image_shape)
+def test_save_video_capture():
+    cap = cv2.VideoCapture(0)
+    w = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+    h = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+    print(w, h)
+    while cap.isOpened():
+        err, img = cap.read()
+        if not err:
+            print("Error: Failed to capture image")
+            break
+
+        cv2.imshow("real_stream", img)
+        # Wait for key press events
+        key = cv2.waitKey(1) & 0xFF
+        if key == ord('s'):  # Press 's' to save the image
+            # Generate a filename with timestamp to avoid overwriting
+            filename = f"{PATH_TO_CALIBRATION_IMAGES}captured_image_{int(time.time())}.png"
+
+            # Save the image
+            cv2.imwrite(filename, img)
+            print(f"Image saved as {filename}")
+
+        elif key == ord('q'):  # Press 'q' to quit
+            print("Exiting...")
+            break
+    cap.release()
+    cv2.destroyAllWindows()
+
+
+test_save_video_capture()
+# all_charuco_corners, all_charuco_ids, image_shape, frame_accepted, working_images = get_images()
+# retval, camera_matrix, dist_coeffs, rvecs, tvecs = calibrate_camera(all_charuco_corners, all_charuco_ids, image_shape)
 # camera_matrix = np.load(f'{FOLDER_FOR_INTRINSICS}/camera_matrix.npy')
 # dist_coeffs = np.load(f'{FOLDER_FOR_INTRINSICS}/dist_coeffs.npy')
 # rvecs = np.load(f'{FOLDER_FOR_RVECS_TVECS}/rvecs.npy')
 # tvecs = np.load(f'{FOLDER_FOR_RVECS_TVECS}/tvecs.npy')
 # plot_reprojection_error_graph(working_images, all_charuco_corners, camera_matrix, dist_coeffs, rvecs, tvecs)
-display_images(frame_accepted, camera_matrix, dist_coeffs)
+# display_images(frame_accepted, camera_matrix, dist_coeffs)
