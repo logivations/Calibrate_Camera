@@ -12,6 +12,7 @@ SQUARES_X = 5
 SQUARES_Y = 7
 SQUARE_LENGTH = 0.139
 MARKER_LENGTH = 0.084
+CORNER_THRESHOLD = 0.5
 
 PATH_TO_CALIBRATION_IMAGES = '/data/calibration_info/camTIS33320064_focus120cm_len121_papermarker/'
 # the folder name must be created according to the principle of as
@@ -63,11 +64,13 @@ def get_images():
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         gray_copy = frame.copy()
         marker_corners, marker_ids, _ = cv2.aruco.detectMarkers(gray, dictionary)
-
+        all_possible_charuco_corners = (SQUARES_X-1)*(SQUARES_Y-1)
         if len(marker_corners) > 0:
             charuco_retval, charuco_corners, charuco_ids = cv2.aruco.interpolateCornersCharuco(marker_corners, marker_ids, gray, board)
             cv2.aruco.drawDetectedMarkers(gray_copy, marker_corners, marker_ids)
-            if charuco_corners is not None and charuco_ids is not None and len(charuco_corners) > 23:
+            if (charuco_corners is not None and charuco_ids is not None
+                    and len(charuco_corners) >= CORNER_THRESHOLD * all_possible_charuco_corners):
+                print(len(charuco_corners), image)
                 accepted_images += 1
                 all_charuco_corners.append(charuco_corners)
                 all_charuco_ids.append(charuco_ids)
