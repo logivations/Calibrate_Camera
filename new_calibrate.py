@@ -57,13 +57,15 @@ def get_images():
     gray = None
     h, w = cv2.imread(PATH_TO_CALIBRATION_IMAGES+images[0], 0).shape[:2]
 
+    params = cv2.aruco.DetectorParameters()
+    params.cornerRefinementMethod = cv2.aruco.CORNER_REFINE_SUBPIX
     for idx, i in enumerate(images):
         image = PATH_TO_CALIBRATION_IMAGES + i
         frame = cv2.imread(image)
         assert w == frame.shape[1] and h == frame.shape[0], "All the images must have same shape"
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         gray_copy = frame.copy()
-        marker_corners, marker_ids, _ = cv2.aruco.detectMarkers(gray, dictionary)
+        marker_corners, marker_ids, _ = cv2.aruco.detectMarkers(gray, dictionary, parameters=params)
         all_possible_charuco_corners = (SQUARES_X-1)*(SQUARES_Y-1)
         if len(marker_corners) > 0:
             charuco_retval, charuco_corners, charuco_ids = cv2.aruco.interpolateCornersCharuco(marker_corners, marker_ids, gray, board)
