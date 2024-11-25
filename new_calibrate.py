@@ -57,13 +57,15 @@ def get_images():
     gray = None
     h, w = cv2.imread(PATH_TO_CALIBRATION_IMAGES+images[0], 0).shape[:2]
 
+    params = cv2.aruco.DetectorParameters()
+    params.cornerRefinementMethod = cv2.aruco.CORNER_REFINE_SUBPIX
     for idx, i in enumerate(images):
         image = PATH_TO_CALIBRATION_IMAGES + i
         frame = cv2.imread(image)
         assert w == frame.shape[1] and h == frame.shape[0], "All the images must have same shape"
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         gray_copy = frame.copy()
-        marker_corners, marker_ids, _ = cv2.aruco.detectMarkers(gray, dictionary)
+        marker_corners, marker_ids, _ = cv2.aruco.detectMarkers(gray, dictionary, parameters=params)
         all_possible_charuco_corners = (SQUARES_X-1)*(SQUARES_Y-1)
         if len(marker_corners) > 0:
             charuco_retval, charuco_corners, charuco_ids = cv2.aruco.interpolateCornersCharuco(marker_corners, marker_ids, gray, board)
@@ -103,17 +105,31 @@ def get_images():
     print('Rejected: ', rejected_images)
     cv2.destroyAllWindows()
     return all_charuco_corners, all_charuco_ids, image_shape, frame_accepted, working_images
+import shutil
 
-
-def calibrate_camera(all_charuco_corners, all_charuco_ids, image_shape):
+def calibrate_camera(all_charuco_corners, all_charuco_ids, image_shape, working_images):
     # Calibrate camera
     start_time = time.time()
-    retval, camera_matrix, dist_coeffs, rvecs, tvecs = cv2.aruco.calibrateCameraCharuco(all_charuco_corners,
-                                                                                        all_charuco_ids, board,
+    retval, camera_matrix, dist_coeffs, rvecs, tvecs, stdDevsIntrinsics, stdDevsExtrinsics, perViewErrors = cv2.aruco.calibrateCameraCharucoExtended(all_charuco_corners,
+                                                                                        all_charuco_ids, board,    #
                                                                                         image_shape, None, None)
+    move_folder = "/data/cause_error_from_615_slow"
+    if not os.path.exists(move_folder):
+        os.makedirs(move_folder)
     print("RMS error: ", retval)
     print('Camera matrix: ', camera_matrix)
     print('Dist matrix: ', dist_coeffs)
+    print("Standard deviations (intrinsics): \n", stdDevsIntrinsics)
+    print("Standard deviations (extrinsics): \n", stdDevsExtrinsics)
+    for i, error in enumerate(perViewErrors):
+        print(f"Image {working_images[i]} - Error: {error}")
+        if error > 2.5:
+            image_name = os.path.basename(working_images[i])
+            destination = os.path.join(move_folder, image_name)
+            # print(f"Moving {working_images[i]} to {destination}")
+            shutil.move(working_images[i], destination)
+
+    # print("Per-view errors: \n", perViewErrors)
     print("Elapsed time in minutes:", (time.time() - start_time)/60)
     np.save(f'{FOLDER_FOR_INTRINSICS}/camera_matrix.npy', camera_matrix)
     np.save(f'{FOLDER_FOR_INTRINSICS}/dist_coeffs.npy', dist_coeffs)
