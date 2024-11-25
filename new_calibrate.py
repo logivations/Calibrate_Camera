@@ -113,6 +113,9 @@ def calibrate_camera(all_charuco_corners, all_charuco_ids, image_shape):
     retval, camera_matrix, dist_coeffs, rvecs, tvecs = cv2.aruco.calibrateCameraCharuco(all_charuco_corners,
                                                                                         all_charuco_ids, board,
                                                                                         image_shape, None, None)
+    move_folder = "/data/cause_error_from_615_slow"
+    if not os.path.exists(move_folder):
+        os.makedirs(move_folder)
     print("RMS error: ", retval)
     print('Camera matrix: ', camera_matrix)
     print('Dist matrix: ', dist_coeffs)
